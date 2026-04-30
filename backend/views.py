@@ -22,7 +22,7 @@ def chat_view(request):
     messages = ChatMessage.objects.filter(session_id=session_id)
 
     context = {
-        'messages': messages,
+        'chat_messages': messages,
         'session_id': session_id,
     }
     return render(request, 'chat.html', context)
