@@ -79,50 +79,70 @@ def send_message(request):
                     "content": msg.message
                 })
             # Call OpenRouter API
-             # Call OpenRouter API
-            response = requests.post(
-                url="https://openrouter.ai/api/v1/chat/completions",
-                headers={
-                    "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": "google/gemma-4-26b-a4b-it:free",  # Free open source model
-                    "messages": api_messages,
-                    "temperature": 0.7,
-                    "max_tokens": 2000,  # Increased for better responses
-                }
-            )
+            try:
+                response = requests.post(
+                    url="https://openrouter.ai/api/v1/chat/completions",
+                    headers={
+                        "Authorization": f"Bearer {settings.OPENROUTER_API_KEY}",
+                        "Content-Type": "application/json"
+                    },
+                    json={
+                        "model": "openrouter/free", # Automatically route to available free models
+                        "messages": api_messages,
+                        "temperature": 0.7,
+                        "max_tokens": 2000,
+                    },
+                    timeout=30
+                )
+                
+                if response.status_code == 429:
+                    return JsonResponse({
+                        'error': 'The AI service is currently busy (rate limit reached). Please try again in a few moments.',
+                        'details': 'Upstream 429: Rate limit exceeded on OpenRouter free tier.'
+                    }, status=429)
+                    
+                response.raise_for_status()
+            except requests.exceptions.RequestException as e:
+                print(f"API Request Error: {str(e)}")
+                if hasattr(e, 'response') and e.response is not None:
+                    print(f"API Error Details: {e.response.text}")
+                    return JsonResponse({
+                        'error': f'API Error: {e.response.status_code}',
+                        'details': e.response.text
+                    }, status=500)
+                return JsonResponse({'error': f'Request failed: {str(e)}'}, status=500)
 
-            if response.status_code == 200:
-                ai_response = response.json()
-                assistant_message = ai_response['choices'][0]['message']['content']
+            ai_response = response.json()
+            if 'choices' not in ai_response or not ai_response['choices']:
+                print(f"Unexpected API Response: {ai_response}")
+                return JsonResponse({
+                    'error': 'Invalid API response format',
+                    'details': str(ai_response)
+                }, status=500)
 
-                 # Limit assistant message to 5000 characters
-                if len(assistant_message) > 5000:
-                    assistant_message = assistant_message[:5000] + "..."
-                # Save assistant message
+            assistant_message = ai_response['choices'][0]['message']['content']
 
-                ChatMessage.objects.create(
+            # Limit assistant message to 5000 characters
+            if len(assistant_message) > 5000:
+                assistant_message = assistant_message[:5000] + "..."
+            
+            # Save assistant message
+            ChatMessage.objects.create(
                 session_id=session_id,
                 role='assistant',
                 message=assistant_message
-                )
+            )
 
-                return JsonResponse({
-                    'success': True,
-                    'message': assistant_message,
-                    'session_id': session_id
-                })
-            else:
-                return JsonResponse({
-                    'error': f'API Error: {response.status_code}',
-                    'details': response.text
-                }, status=500)
+            return JsonResponse({
+                'success': True,
+                'message': assistant_message,
+                'session_id': session_id
+            })
                 
-                
-            
         except Exception as e:
+            import traceback
+            print(f"General Error in send_message: {str(e)}")
+            traceback.print_exc()
             return JsonResponse({'error': str(e)}, status=500)
 
 
