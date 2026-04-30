@@ -1,0 +1,167 @@
+# =============================================================
+#  .gitignore — Django + Render Deployment
+# =============================================================
+
+# ──────────────────────────────────────────
+# Environment & Secrets  ← CRITICAL for Render
+# ──────────────────────────────────────────
+.env
+.env.*
+!.env.example          # keep a sanitised template in git
+*.env
+secrets.py
+local_settings.py
+
+# ──────────────────────────────────────────
+# Python
+# ──────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+*.pyd
+*.pdb
+
+# ──────────────────────────────────────────
+# Virtual Environments
+# ──────────────────────────────────────────
+venv/
+env/
+.venv/
+.env/
+ENV/
+env.bak/
+venv.bak/
+
+# ──────────────────────────────────────────
+# Django-specific
+# ──────────────────────────────────────────
+*.log
+*.pot
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Collected static files (Render runs collectstatic in build)
+staticfiles/
+static_root/
+/static/
+
+# Media uploads (use cloud storage like Cloudinary/S3 in production)
+media/
+mediafiles/
+
+# ──────────────────────────────────────────
+# Render Build Artefacts
+# ──────────────────────────────────────────
+# build.sh is intentionally tracked — do NOT ignore it
+.render-buildpacks.json  # auto-generated, not needed in repo
+
+# ──────────────────────────────────────────
+# Database dumps / backups
+# ──────────────────────────────────────────
+*.sql
+*.dump
+*.bak
+*.backup
+*.csv.bak
+
+# ──────────────────────────────────────────
+# Testing & Coverage
+# ──────────────────────────────────────────
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.pytest_cache/
+.tox/
+nosetests.xml
+test-results/
+
+# ──────────────────────────────────────────
+# Packaging / Distribution
+# ──────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+pip-wheel-metadata/
+.eggs/
+wheels/
+
+# ──────────────────────────────────────────
+# Jupyter / IPython
+# ──────────────────────────────────────────
+.ipynb_checkpoints
+*.ipynb
+
+# ──────────────────────────────────────────
+# Node / Frontend (if you add one later)
+# ──────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log
+.pnp/
+.pnp.js
+
+# ──────────────────────────────────────────
+# IDEs & Editors
+# ──────────────────────────────────────────
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+\#*\#
+.emacs.d/
+
+# ──────────────────────────────────────────
+# OS Artefacts
+# ──────────────────────────────────────────
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+
+# ──────────────────────────────────────────
+# Misc
+# ──────────────────────────────────────────
+*.pid
+*.seed
+*.pid.lock
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.ruff_cache/
+cython_debug/
