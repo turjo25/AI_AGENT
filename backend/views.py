@@ -87,7 +87,7 @@ def send_message(request):
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "deepseek/deepseek-r1-0528:free",  # Free open source model
+                    "model": "meta-llama/llama-3.3-70b-instruct:free",  # Free open source model
                     "messages": api_messages,
                     "temperature": 0.7,
                     "max_tokens": 2000,  # Increased for better responses
