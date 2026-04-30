@@ -41,3 +41,6 @@ tqdm
 tzdata
 urllib3
 vaderSentiment
+
+gunicorn
+whitenoise
