@@ -44,3 +44,5 @@ vaderSentiment
 
 gunicorn
 whitenoise
+
+psycopg2-binary
