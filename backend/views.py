@@ -87,7 +87,7 @@ def send_message(request):
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "meta-llama/llama-3.3-70b-instruct:free",  # Free open source model
+                    "model": "google/gemma-4-26b-a4b-it:free",  # Free open source model
                     "messages": api_messages,
                     "temperature": 0.7,
                     "max_tokens": 2000,  # Increased for better responses
